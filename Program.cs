@@ -132,7 +132,7 @@ namespace pathfinding
 
         public static void Throb(CancellationToken token)
         {
-            var spinner = new[] { '|', '/', '-', '\\' };
+            var spinner = new[] { '└', '├', '┌', '┬', '┐', '┤', '┘', '┴' };
             int i = 0;
             while (!token.IsCancellationRequested)
             {
