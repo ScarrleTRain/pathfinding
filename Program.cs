@@ -1,4 +1,5 @@
-﻿using static pathfinding.Program;
+﻿using System.Text;
+using static pathfinding.Program;
 
 namespace pathfinding
 {
@@ -70,20 +71,21 @@ namespace pathfinding
             while (true)
             {
                 Render();
+
                 key = Console.ReadKey(true);
-                if (key.Key == ConsoleKey.DownArrow && Map[Character.X, Character.Y + 1].IsWalkable)
+                if (key.Key == ConsoleKey.DownArrow && Character.Y < Map.GetLength(1) && Map[Character.X, Character.Y + 1].IsWalkable)
                 {
                     Character.Y++;
                 }
-                else if (key.Key == ConsoleKey.UpArrow && Map[Character.X, Character.Y - 1].IsWalkable)
+                else if (key.Key == ConsoleKey.UpArrow && Character.Y > 0 && Map[Character.X, Character.Y - 1].IsWalkable)
                 {
                     Character.Y--;
                 }
-                else if (key.Key == ConsoleKey.LeftArrow && Map[Character.X - 1, Character.Y].IsWalkable)
+                else if (key.Key == ConsoleKey.LeftArrow && Character.X > 0 && Map[Character.X - 1, Character.Y].IsWalkable)
                 {
                     Character.X--;
                 }
-                else if (key.Key == ConsoleKey.RightArrow && Map[Character.X + 1, Character.Y].IsWalkable)
+                else if (key.Key == ConsoleKey.RightArrow && Character.X < Map.GetLength(0) && Map[Character.X + 1, Character.Y].IsWalkable)
                 {
                     Character.X++;
                 }
@@ -132,15 +134,21 @@ namespace pathfinding
 
         public static void Throb(CancellationToken token)
         {
-            var spinner = new[] { '└', '├', '┌', '┬', '┐', '┤', '┘', '┴' };
-            int i = 0;
+            Console.OutputEncoding = Encoding.UTF8;
+            Random rand = new();
+            StringBuilder sb = new(capacity: 5);
+
             while (!token.IsCancellationRequested)
             {
-                Console.Write($"\r{spinner[i++ % spinner.Length]}");
+                sb.Clear();
+                for (int i = 0; i < 10; i++)
+                    sb.Append((char)(0x2800 + rand.Next(0x100)));
+
+                Console.Write($"\r{sb}");
                 Thread.Sleep(100);
             }
 
-            Console.Write("\r ");
+            Console.OutputEncoding = Encoding.Default;
         }
 
         public static void DrawSimple()
