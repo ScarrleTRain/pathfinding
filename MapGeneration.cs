@@ -4,6 +4,9 @@ namespace pathfinding
 {
     internal class MapGeneration
     {
+        public static readonly Tile WallTile = new Tile('#', false, ConsoleColor.Gray);
+        public static readonly Tile FloorTile = new Tile('·', true, ConsoleColor.Gray);
+
         public static Tile[,] Generate(int width, int height)
         {
             Map = new Tile[width, height];

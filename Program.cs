@@ -22,9 +22,6 @@ namespace pathfinding
             }
         }
 
-        public static readonly Tile WallTile = new Tile('#', false, ConsoleColor.Gray);
-        public static readonly Tile FloorTile = new Tile('·', true, ConsoleColor.DarkGray);
-
         public class Entity
         {
             public int X { get; set; }
@@ -70,6 +67,7 @@ namespace pathfinding
                     }
 
             ConsoleKeyInfo key;
+            FOV.ComputeFOV(Character.X, Character.Y, 5);
 
             while (true)
             {
@@ -92,6 +90,8 @@ namespace pathfinding
                 {
                     Character.X++;
                 }
+
+                FOV.ComputeFOV(Character.X, Character.Y, 5);
             }
         }
 
@@ -110,12 +110,30 @@ namespace pathfinding
 
                     // Check it against the buffer
                     if (targetTile.DisplayChar != MapBuffer[x, y].DisplayChar ||
-                        targetTile.Color != MapBuffer[x, y].Color)
+                        targetTile.Color != MapBuffer[x, y].Color ||
+                        targetTile.IsDiscovered != MapBuffer[x, y].IsDiscovered ||
+                        targetTile.IsInView != MapBuffer[x, y].IsInView)
                     {
                         // They are different! Draw the new tile.
                         Console.SetCursorPosition(x, y);
-                        Console.ForegroundColor = targetTile.Color;
-                        Console.Write(targetTile.DisplayChar);
+
+                        if (targetTile.IsInView)
+                        {
+                            // In view: Draw bright and clear
+                            // (This is the only check you need to add)
+                            Console.ForegroundColor = targetTile.Color;
+                            Console.Write(targetTile.DisplayChar);
+                        }
+                        else if (targetTile.IsDiscovered)
+                        {
+                            Console.ForegroundColor = ConsoleColor.DarkGray; // Dim it
+                            Console.Write(targetTile.DisplayChar);
+                        }
+                        else
+                        {
+                            // Not discovered: Draw empty space
+                            Console.Write(' ');
+                        }
 
                         // Update the buffer
                         MapBuffer[x, y] = targetTile;
